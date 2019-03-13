@@ -44,21 +44,21 @@
     right: 4px;
     outline: none;
     color: #333;
-    margin-top: -9px;
+    margin-top: -8px;
+    width: 16px;
+    height: 16px;
+    font-size: 0;
   }
 
   &-arrow &-arrow-loading {
     display: inline-block;
-    width: 18px;
-    height: 18px;
-    margin-top: 6px;
-    margin-left: -4px;
+    width: 16px;
+    height: 16px;
     &:after {
       content: ' ';
       display: block;
       width: 12px;
       height: 12px;
-      margin: 2px;
       border-radius: 50%;
       border: 2px solid #999999;
       border-color: #999999 transparent #999999 transparent;
@@ -115,6 +115,8 @@
       right: 4px;
       outline: none;
       margin-top: -9px;
+      width: 16px;
+      height: 16px;
     }
   }
 
@@ -275,6 +277,7 @@
 
     .@{selectPrefixCls}-selection__choice__disabled {
       cursor: not-allowed;
+      padding-right: 12px !important;
       &:hover {
         .@{selectPrefixCls}-selection__choice__content {
           margin-left: 0;

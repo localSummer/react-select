@@ -1455,7 +1455,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
   };
   public renderArrow(multiple: boolean) {
     // showArrow : Set to true if not multiple by default but keep set value.
-    const { showArrow = !multiple, loading, inputIcon, prefixCls } = this.props;
+    const { showArrow = !multiple, loading, inputIcon, prefixCls, allowClear } = this.props;
     const { showClear } = this.state;
 
     if (!showArrow && !loading) {
@@ -1472,7 +1472,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     return (
       <span
         key="arrow"
-        className={`${prefixCls}-arrow ${showClear ? 'hide' : ''}`}
+        className={`${prefixCls}-arrow ${(allowClear && showClear) ? 'hide' : ''}`}
         style={UNSELECTABLE_STYLE}
         {...UNSELECTABLE_ATTRIBUTE}
         onClick={this.onArrowClick}

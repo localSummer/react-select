@@ -14,7 +14,7 @@ class Test extends React.Component {
   componentDidMount() {
     setTimeout(() => {
       this.loadData();
-    }, 2000);
+    }, 2000000);
   }
 
   onChange = (value, options) => {

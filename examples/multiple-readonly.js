@@ -35,6 +35,7 @@ class Test extends React.Component {
           <Select
             multiple
             value={value}
+            // open
             animation="slide-up"
             choiceTransitionName="rc-select-selection__choice-zoom"
             dropdownMenuStyle={dropdownMenuStyle}
@@ -43,6 +44,7 @@ class Test extends React.Component {
             optionLabelProp="children"
             placeholder="please select"
             onChange={this.onChange}
+            showArrow
           >
             {children}
           </Select>

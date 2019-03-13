@@ -28,7 +28,7 @@ class Test extends React.Component {
         <div style={{ width: 300 }}>
           <Select
             placeholder="分组下拉"
-            open
+            // open
             combobox
             value={this.state.value}
             style={{ width: '100%' }}

@@ -57,6 +57,8 @@ class Controlled extends React.Component {
             placeholder="placeholder"
             dropdownMenuStyle={{ maxHeight: 200 }}
             style={{ width: 500 }}
+            // showArrow
+            // allowClear
             onBlur={this.onBlur}
             onFocus={this.onFocus}
             open={open}

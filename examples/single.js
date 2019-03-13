@@ -51,7 +51,7 @@ class Test extends React.Component {
           <Select
             id="my-select"
             // value={value}
-            open
+            // open
             placeholder="placeholder"
             dropdownMenuStyle={{ maxHeight: 200 }}
             // showSearch
