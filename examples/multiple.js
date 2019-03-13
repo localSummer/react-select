@@ -115,7 +115,7 @@ class Test extends React.Component {
             showArrow={showArrow}
             allowClear
             // clearIcon={<i className="text-icon icon-prompt-failure"></i>}
-            showArrow
+            // showArrow
             // showSearch
             optionFilterProp="children"
             optionLabelProp="children"
@@ -127,7 +127,7 @@ class Test extends React.Component {
             onBlur={v => console.log('blur', v)}
             tokenSeparators={[' ', ',']}
             menuItemSelectedIcon={menuItemSelectedIcon}
-            isMulDeleteFocusItem={false}
+            isMulDeleteFocusItem
           >
             {children}
           </Select>
