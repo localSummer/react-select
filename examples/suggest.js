@@ -59,12 +59,13 @@ class Test extends React.Component {
   };
 
   handleBlur = () => {
-    if (!this.state.value) {
+    let { value } = this.state;
+    if (!value) {
       this.lastSelected.id = '';
       this.lastSelected.value = '';
       return;
     }
-    if (this.state.value !== this.lastSelected.value) {
+    if (value !== this.lastSelected.value) {
       this.setState({
         value: this.lastSelected.value,
       });
@@ -72,7 +73,7 @@ class Test extends React.Component {
   };
 
   fetchData = value => {
-    let content = value || this.state.value;
+    const content = value || this.state.value;
     fetch(content, data => {
       this.setState({
         data,

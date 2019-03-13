@@ -67,6 +67,7 @@ export interface ISelectProps {
   loading: boolean;
   isLoading: boolean;
   mulDeleteFocusItem: (args: any) => null;
+  isMulDeleteFocusItem: boolean;
   value: valueType;
   firstActiveValue: valueType;
   defaultValue: valueType;
@@ -174,7 +175,9 @@ const SelectPropTypes = {
   removeIcon: PropTypes.node,
   menuItemSelectedIcon: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   dropdownRender: PropTypes.func,
+  isLoading: PropTypes.bool,
   mulDeleteFocusItem: PropTypes.func,
+  isMulDeleteFocusItem: PropTypes.bool
 };
 
 export default SelectPropTypes;

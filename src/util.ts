@@ -139,6 +139,8 @@ export const UNSEARCHCONTENT_STYLE: any = {
   lineHeight: '40px',
 };
 
+export const MULDELETEFOCUSITEM_CLASSNAME = 'focus-delete-last-tag';
+
 export function findFirstMenuItem(children: JSX.Element[]): JSX.Element | null {
   // tslint:disable-next-line:prefer-for-of
   for (let i = 0; i < children.length; i++) {

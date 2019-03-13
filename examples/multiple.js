@@ -39,7 +39,6 @@ class Test extends React.Component {
     showArrow: 0,
     loading: 0,
     value: [],
-    className: '',
   };
 
   onChange = (value, options) => {
@@ -75,14 +74,8 @@ class Test extends React.Component {
     });
   };
 
-  handleMulDeleteFocusItem = isDeleteFocus => {
-    this.setState({
-      className: isDeleteFocus ? 'focus-delete-last-tag' : '',
-    });
-  };
-
   render() {
-    const { useAnim, showArrow, loading, value, className } = this.state;
+    const { useAnim, showArrow, loading, value } = this.state;
     const dropdownMenuStyle = {
       maxHeight: 200,
     };
@@ -110,7 +103,6 @@ class Test extends React.Component {
 
         <div style={{ width: 300 }}>
           <Select
-            className={className}
             value={value}
             animation={useAnim ? 'slide-up' : null}
             choiceTransitionName="rc-select-selection__choice-zoom"
@@ -135,7 +127,7 @@ class Test extends React.Component {
             onBlur={v => console.log('blur', v)}
             tokenSeparators={[' ', ',']}
             menuItemSelectedIcon={menuItemSelectedIcon}
-            mulDeleteFocusItem={this.handleMulDeleteFocusItem}
+            isMulDeleteFocusItem={false}
           >
             {children}
           </Select>

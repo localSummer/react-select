@@ -36,6 +36,7 @@ import {
   UNSELECTABLE_STYLE,
   UNSEARCHCONTENT_STYLE,
   validateOptionValue,
+  MULDELETEFOCUSITEM_CLASSNAME,
 } from './util';
 
 const SELECT_EMPTY_VALUE_KEY = 'RC_SELECT_EMPTY_VALUE_KEY';
@@ -64,6 +65,7 @@ export interface ISelectState {
   backfillValue?: string;
   ariaId?: string;
   showClear?: boolean;
+  showDeleteFocusItem?: boolean;
 }
 
 class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
@@ -100,6 +102,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     tabIndex: 0,
     dropdownRender: (menu: any) => menu,
     isLoading: false,
+    isMulDeleteFocusItem: false,
   };
   public static getDerivedStateFromProps = (nextProps: ISelectProps, prevState: ISelectState) => {
     const optionsInfo = prevState.skipBuildOptionsInfo
@@ -248,8 +251,6 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
   private _options: JSX.Element[] = [];
   // tslint:disable-next-line:variable-name
   private _empty: boolean = false;
-  // tslint:disable-next-line:variable-name
-  private _deleteFocus: boolean = false;
   constructor(props: Partial<ISelectProps>) {
     super(props);
     const optionsInfo = Select.getOptionsInfoFromProps(props);
@@ -276,6 +277,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
       skipBuildOptionsInfo: true,
       ariaId: '',
       showClear: false,
+      showDeleteFocusItem: false,
     };
 
     this.saveInputRef = saveRef(this, 'inputRef');
@@ -380,7 +382,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
   };
 
   public onInputKeyDown = (event: React.ChangeEvent<HTMLInputElement> | KeyboardEvent) => {
-    const { disabled, combobox, mulDeleteFocusItem } = this.props;
+    const { disabled, combobox, isMulDeleteFocusItem } = this.props;
     if (disabled) {
       return;
     }
@@ -395,14 +397,20 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
       keyCode === KeyCode.BACKSPACE
     ) {
       event.preventDefault();
-      this._deleteFocus = !this._deleteFocus;
       const value = state.value as string[];
       if (value.length) {
-        mulDeleteFocusItem(this._deleteFocus);
-        if (this._deleteFocus) {
-          return;
+        if (isMulDeleteFocusItem) {
+          this.setState({
+            showDeleteFocusItem: !state.showDeleteFocusItem,
+          }, () => {
+            if (this.state.showDeleteFocusItem) {
+              return;
+            }
+            this.removeSelected(value[value.length - 1]);
+          });
+        } else {
+          this.removeSelected(value[value.length - 1]);
         }
-        this.removeSelected(value[value.length - 1]);
       }
       return;
     }
@@ -594,8 +602,11 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     if (inputValue || value.length) {
       if (value.length) {
         // 重置多选第一次按下删除键时可能存在的删除激活项
-        this._deleteFocus = false;
-        props.mulDeleteFocusItem(false);
+        if (props.isMulDeleteFocusItem) {
+          this.setState({
+            showDeleteFocusItem: false,
+          });
+        }
         this.fireChange([]);
       }
       this.setOpenState(false, true);
@@ -1044,8 +1055,11 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     if (canMultiple) {
       let event: valueType = selectedKey;
       // 重置多选第一次按下删除键时可能存在的删除激活项
-      this._deleteFocus = false;
-      props.mulDeleteFocusItem(false);
+      if (props.isMulDeleteFocusItem) {
+        this.setState({
+          showDeleteFocusItem: false,
+        });
+      }
       if (props.labelInValue) {
         event = {
           key: selectedKey as string,
@@ -1546,6 +1560,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     const rootCls = {
       [className as string]: !!className,
       [prefixCls as string]: 1,
+      [MULDELETEFOCUSITEM_CLASSNAME]: state.showDeleteFocusItem,
       [`${prefixCls}-open`]: open,
       [`${prefixCls}-focused`]: open || !!this._focused,
       [`${prefixCls}-combobox`]: isCombobox(props),
