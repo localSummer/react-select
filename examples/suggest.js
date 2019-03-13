@@ -12,7 +12,21 @@ class Test extends React.Component {
   state = {
     data: [],
     value: '',
+    isLoading: true,
   };
+
+  lastSelected = {
+    id: '',
+    value: '',
+  };
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({
+        isLoading: false,
+      });
+    }, 5000);
+  }
 
   onKeyDown = e => {
     if (e.keyCode === 13) {
@@ -22,8 +36,13 @@ class Test extends React.Component {
     }
   };
 
-  onSelect = value => {
-    console.log('select ', value);
+  onSelect = (value, opt) => {
+    console.log('value, opt: ', value, opt);
+    this.lastSelected.value = value;
+    this.lastSelected.id = opt.props.id;
+    this.setState({
+      value,
+    });
     this.jump(value);
   };
 
@@ -32,11 +51,29 @@ class Test extends React.Component {
     // location.href = 'https://s.taobao.com/search?q=' + encodeURIComponent(v);
   };
 
-  fetchData = value => {
+  handleChange = value => {
     this.setState({
-      value,
+      value: value || '',
     });
-    fetch(value, data => {
+    this.fetchData(value);
+  };
+
+  handleBlur = () => {
+    if (!this.state.value) {
+      this.lastSelected.id = '';
+      this.lastSelected.value = '';
+      return;
+    }
+    if (this.state.value !== this.lastSelected.value) {
+      this.setState({
+        value: this.lastSelected.value,
+      });
+    }
+  };
+
+  fetchData = value => {
+    let content = value || this.state.value;
+    fetch(content, data => {
       this.setState({
         data,
       });
@@ -44,9 +81,19 @@ class Test extends React.Component {
   };
 
   render() {
-    const { data, value } = this.state;
+    const { data, value, isLoading } = this.state;
+    console.log('value: ', value);
     const options = data.map(d => {
-      return <Option key={d.value}>{d.text}</Option>;
+      const index = d.text.indexOf(value);
+      const beforeStr = d.text.substr(0, index);
+      const afterStr = d.text.substr(index + value.length);
+      return (
+        <Option key={d.value} id={d.value} value={d.text}>
+          <span style={{ fontWeight: 'bold' }}>{beforeStr}</span>
+          <span>{value}</span>
+          <span style={{ fontWeight: 'bold' }}>{afterStr}</span>
+        </Option>
+      );
     });
     return (
       <div>
@@ -56,17 +103,22 @@ class Test extends React.Component {
           <Select
             style={{ width: 500 }}
             combobox
+            // open
+            dropdownAlign={{ offset: [0, 1] }} // Menu框与select框的距离
             value={value}
-            placeholder="placeholder"
+            allowClear
+            placeholder="请输入搜索项"
             defaultActiveFirstOption={false}
             getInputElement={() => <Input />}
-            showArrow={false}
-            notFoundContent=""
-            onChange={this.fetchData}
+            showArrow
+            notFoundContent="没有搜索到相关选项"
+            onChange={this.handleChange}
             onSelect={this.onSelect}
             filterOption={false}
-            onFocus={() => console.log('focus')}
-            onBlur={() => console.log('blur')}
+            optionLabelProp="value"
+            onFocus={this.fetchData}
+            onBlur={this.handleBlur}
+            isLoading={isLoading}
           >
             {options}
           </Select>

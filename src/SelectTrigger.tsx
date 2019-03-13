@@ -214,6 +214,7 @@ export default class SelectTrigger extends React.Component<
     if (this.state.dropdownWidth) {
       popupStyle[widthProp] = `${this.state.dropdownWidth}px`;
     }
+    // console.log('popupStyle: ', popupStyle);
     return (
       <Trigger
         {...props}

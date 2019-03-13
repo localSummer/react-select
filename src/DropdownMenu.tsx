@@ -214,7 +214,8 @@ export default class DropdownMenu extends React.Component<Partial<IDropdownMenuP
           style={this.props.dropdownMenuStyle}
           defaultActiveFirst={defaultActiveFirst}
           role="listbox"
-          itemIcon={multiple ? menuItemSelectedIcon : null}
+          // itemIcon={multiple ? menuItemSelectedIcon : null}
+          itemIcon={menuItemSelectedIcon}
           {...activeKeyProps}
           multiple={multiple}
           {...menuProps}

@@ -34,12 +34,15 @@ import {
   toTitle,
   UNSELECTABLE_ATTRIBUTE,
   UNSELECTABLE_STYLE,
+  UNSEARCHCONTENT_STYLE,
   validateOptionValue,
 } from './util';
 
 const SELECT_EMPTY_VALUE_KEY = 'RC_SELECT_EMPTY_VALUE_KEY';
 
 const noop = () => null;
+
+const argsNoop = (args: any) => null;
 
 function chaining(...fns: any[]) {
   return (...args: any[]) => {
@@ -60,6 +63,7 @@ export interface ISelectState {
   optionsInfo?: any;
   backfillValue?: string;
   ariaId?: string;
+  showClear?: boolean;
 }
 
 class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
@@ -82,6 +86,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     onSearch: noop,
     onDeselect: noop,
     onInputKeyDown: noop,
+    mulDeleteFocusItem: argsNoop,
     dropdownMatchSelectWidth: true,
     dropdownStyle: {},
     dropdownMenuStyle: {},
@@ -94,6 +99,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     autoClearSearchValue: true,
     tabIndex: 0,
     dropdownRender: (menu: any) => menu,
+    isLoading: false,
   };
   public static getDerivedStateFromProps = (nextProps: ISelectProps, prevState: ISelectState) => {
     const optionsInfo = prevState.skipBuildOptionsInfo
@@ -242,6 +248,8 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
   private _options: JSX.Element[] = [];
   // tslint:disable-next-line:variable-name
   private _empty: boolean = false;
+  // tslint:disable-next-line:variable-name
+  private _deleteFocus: boolean = false;
   constructor(props: Partial<ISelectProps>) {
     super(props);
     const optionsInfo = Select.getOptionsInfoFromProps(props);
@@ -267,6 +275,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
       // a flag for aviod redundant getOptionsInfoFromProps call
       skipBuildOptionsInfo: true,
       ariaId: '',
+      showClear: false,
     };
 
     this.saveInputRef = saveRef(this, 'inputRef');
@@ -371,7 +380,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
   };
 
   public onInputKeyDown = (event: React.ChangeEvent<HTMLInputElement> | KeyboardEvent) => {
-    const { disabled, combobox } = this.props;
+    const { disabled, combobox, mulDeleteFocusItem } = this.props;
     if (disabled) {
       return;
     }
@@ -386,8 +395,13 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
       keyCode === KeyCode.BACKSPACE
     ) {
       event.preventDefault();
+      this._deleteFocus = !this._deleteFocus;
       const value = state.value as string[];
       if (value.length) {
+        mulDeleteFocusItem(this._deleteFocus);
+        if (this._deleteFocus) {
+          return;
+        }
         this.removeSelected(value[value.length - 1]);
       }
       return;
@@ -579,6 +593,9 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     event.stopPropagation();
     if (inputValue || value.length) {
       if (value.length) {
+        // 重置多选第一次按下删除键时可能存在的删除激活项
+        this._deleteFocus = false;
+        props.mulDeleteFocusItem(false);
         this.fireChange([]);
       }
       this.setOpenState(false, true);
@@ -693,6 +710,10 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     const props = this.props;
     const state = this.state;
     let hidden = false;
+    // 打开下拉框隐藏 placeholder
+    if (state.open) {
+      hidden = true;
+    }
     if (state.inputValue) {
       hidden = true;
     }
@@ -888,7 +909,22 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
   };
 
   public markMouseLeave = () => {
+    const { showClear } = this.state;
     this._mouseDown = false;
+    if (showClear) {
+      this.setState({
+        showClear: false,
+      });
+    }
+  };
+
+  public markMouseOver = () => {
+    const { inputValue, value } = this.state;
+    if (inputValue || ((value as string[]).length > 0 && (value as string[])[0] !== '')) {
+      this.setState({
+        showClear: true,
+      });
+    }
   };
 
   public handleBackfill = (item: JSX.Element) => {
@@ -1007,6 +1043,9 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
 
     if (canMultiple) {
       let event: valueType = selectedKey;
+      // 重置多选第一次按下删除键时可能存在的删除激活项
+      this._deleteFocus = false;
+      props.mulDeleteFocusItem(false);
       if (props.labelInValue) {
         event = {
           key: selectedKey as string,
@@ -1071,7 +1110,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
 
   public renderFilterOptions = (): { empty: boolean; options: JSX.Element[] } => {
     const { inputValue } = this.state;
-    const { children, tags, notFoundContent } = this.props;
+    const { children, tags, notFoundContent, isLoading, prefixCls } = this.props;
     const menuItems: JSX.Element[] = [];
     const childrenKeys: string[] = [];
     let empty = false;
@@ -1123,18 +1162,20 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
       }
     }
 
-    if (!options.length && notFoundContent) {
+    if (isLoading || (!options.length && notFoundContent)) {
       empty = true;
+      const className = `${prefixCls}-mul-not-found`;
       options = [
         <MenuItem
-          style={UNSELECTABLE_STYLE}
+          className={className}
+          style={UNSEARCHCONTENT_STYLE}
           attribute={UNSELECTABLE_ATTRIBUTE}
           disabled={true}
           role="option"
           value="NOT_FOUND"
           key="NOT_FOUND"
         >
-          {notFoundContent}
+          {isLoading ? <i className="text-icon icon-change infinite-rote" /> : notFoundContent}
         </MenuItem>,
       ];
     }
@@ -1256,13 +1297,13 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
       let selectedValue: JSX.Element | null = null;
       if (value.length) {
         let showSelectedValue = false;
-        let opacity = 1;
+        const opacity = 1;
         if (!showSearch) {
           showSelectedValue = true;
         } else if (open) {
           showSelectedValue = !inputValue;
           if (showSelectedValue) {
-            opacity = 0.4;
+            // opacity = 0.4;
           }
         } else {
           showSelectedValue = true;
@@ -1401,6 +1442,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
   public renderArrow(multiple: boolean) {
     // showArrow : Set to true if not multiple by default but keep set value.
     const { showArrow = !multiple, loading, inputIcon, prefixCls } = this.props;
+    const { showClear } = this.state;
 
     if (!showArrow && !loading) {
       return null;
@@ -1410,12 +1452,13 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     const defaultIcon = loading ? (
       <i className={`${prefixCls}-arrow-loading`} />
     ) : (
-      <i className={`${prefixCls}-arrow-icon`} />
+      // <i className={`${prefixCls}-arrow-icon`} />
+      <i className="text-icon icon-downarrow" />
     );
     return (
       <span
         key="arrow"
-        className={`${prefixCls}-arrow`}
+        className={`${prefixCls}-arrow ${showClear ? 'hide' : ''}`}
         style={UNSELECTABLE_STYLE}
         {...UNSELECTABLE_ATTRIBUTE}
         onClick={this.onArrowClick}
@@ -1426,18 +1469,19 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
   }
   public renderClear() {
     const { prefixCls, allowClear, clearIcon } = this.props;
-    const { inputValue } = this.state;
+    const { inputValue, showClear } = this.state;
     const value = this.state.value as string[];
     const clear = (
       <span
         key="clear"
-        className={`${prefixCls}-selection__clear`}
+        className={`${prefixCls}-selection__clear ${!showClear ? 'hide' : ''}`}
         onMouseDown={preventDefaultEvent}
         style={UNSELECTABLE_STYLE}
         {...UNSELECTABLE_ATTRIBUTE}
         onClick={this.onClearSelection}
       >
-        {clearIcon || <i className={`${prefixCls}-selection__clear-icon`}>×</i>}
+        {/* {clearIcon || <i className={`${prefixCls}-selection__clear-icon`}>×</i>} */}
+        {clearIcon || <i className="text-icon icon-prompt-failure" />}
       </span>
     );
     if (!allowClear) {
@@ -1557,6 +1601,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
           onMouseDown={this.markMouseDown}
           onMouseUp={this.markMouseLeave}
           onMouseOut={this.markMouseLeave}
+          onMouseOver={this.markMouseOver}
         >
           <div
             ref={this.saveSelectionRef}

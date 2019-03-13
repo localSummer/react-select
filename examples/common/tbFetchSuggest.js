@@ -24,7 +24,7 @@ export function fetch(value, callback) {
         const data = [];
         result.forEach(r => {
           data.push({
-            value: r[0],
+            value: r[1],
             text: r[0],
           });
         });

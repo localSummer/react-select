@@ -2,23 +2,44 @@
 
 import React from 'react';
 import Select, { Option } from '../src';
+import classnames from 'classnames';
 import '../assets/index.less';
 
 const children = [];
 for (let i = 10; i < 36; i++) {
   children.push(
-    <Option key={i.toString(36) + i} disabled={i === 10} title={`中文${i}`}>
+    <Option
+      key={i.toString(36) + i}
+      disabled={i === 10 || i === 11}
+      isDispatch={i === 10}
+      title={`中文${i}`}
+    >
       中文{i}
     </Option>,
   );
 }
+
+const menuItemSelectedIcon = props => {
+  const { ...p } = props;
+  const menuStyle = classnames({
+    checkboxui: true,
+    'checkboxui-checked': p.isSelected,
+    'checkboxui-disabled': p.disabled,
+  });
+  return (
+    <span className="menu-item-right-selected">
+      {p.isDispatch && p.disabled ? '已转发' : <i className={menuStyle} />}
+    </span>
+  );
+};
 
 class Test extends React.Component {
   state = {
     useAnim: 0,
     showArrow: 0,
     loading: 0,
-    value: ['a10'],
+    value: [],
+    className: '',
   };
 
   onChange = (value, options) => {
@@ -54,8 +75,14 @@ class Test extends React.Component {
     });
   };
 
+  handleMulDeleteFocusItem = isDeleteFocus => {
+    this.setState({
+      className: isDeleteFocus ? 'focus-delete-last-tag' : '',
+    });
+  };
+
   render() {
-    const { useAnim, showArrow, loading, value } = this.state;
+    const { useAnim, showArrow, loading, value, className } = this.state;
     const dropdownMenuStyle = {
       maxHeight: 200,
     };
@@ -83,15 +110,21 @@ class Test extends React.Component {
 
         <div style={{ width: 300 }}>
           <Select
+            className={className}
             value={value}
             animation={useAnim ? 'slide-up' : null}
             choiceTransitionName="rc-select-selection__choice-zoom"
             dropdownMenuStyle={dropdownMenuStyle}
-            style={{ width: 500 }}
+            style={{ width: 300 }}
             multiple
+            open
+            dropdownAlign={{ offset: [0, 1] }} // Menu框与select框的距离
             loading={loading}
             showArrow={showArrow}
             allowClear
+            // clearIcon={<i className="text-icon icon-prompt-failure"></i>}
+            showArrow
+            // showSearch
             optionFilterProp="children"
             optionLabelProp="children"
             onSelect={this.onSelect}
@@ -101,6 +134,8 @@ class Test extends React.Component {
             onFocus={() => console.log('focus')}
             onBlur={v => console.log('blur', v)}
             tokenSeparators={[' ', ',']}
+            menuItemSelectedIcon={menuItemSelectedIcon}
+            mulDeleteFocusItem={this.handleMulDeleteFocusItem}
           >
             {children}
           </Select>

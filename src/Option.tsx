@@ -6,6 +6,7 @@ export interface IOptProps {
   label: string | number;
   value: string | number;
   key: string | number;
+  rightText: string;
   className: string;
   disabled: boolean;
   // Everything for testing

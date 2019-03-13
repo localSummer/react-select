@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.2 (51160) - http://www.bohemiancoding.com/sketch -->
+    <title>app</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="app" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M320,64 L704,64 C774.692448,64 832,121.307552 832,192 L832,832 C832,902.692448 774.692448,960 704,960 L320,960 C249.307552,960 192,902.692448 192,832 L192,192 C192,121.307552 249.307552,64 320,64 Z M320,160 C302.326888,160 288,174.326888 288,192 L288,832 C288,849.673112 302.326888,864 320,864 L704,864 C721.673112,864 736,849.673112 736,832 L736,192 C736,174.326888 721.673112,160 704,160 L320,160 Z M512,768 C476.653776,768 448,739.346224 448,704 C448,668.653776 476.653776,640 512,640 C547.346224,640 576,668.653776 576,704 C576,739.346224 547.346224,768 512,768 Z" id="Combined-Shape" fill="#999999" fill-rule="nonzero"></path>
+    </g>
+</svg>

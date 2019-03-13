@@ -3,21 +3,22 @@
 import React from 'react';
 import Select, { Option } from '../src';
 import '../assets/index.less';
+import positionImg from './images/position.png';
 
 class Test extends React.Component {
   state = {
     destroy: false,
-    value: 9,
+    value: '',
   };
 
-  onChange = e => {
+  onChange = (e, opt) => {
     let value;
     if (e && e.target) {
       value = e.target.value;
     } else {
       value = e;
     }
-    console.log('onChange', value);
+    console.log('onChange', value, opt);
     this.setState({
       value,
     });
@@ -44,27 +45,30 @@ class Test extends React.Component {
     }
     return (
       <div style={{ margin: 20 }}>
-        <div style={{ height: 150 }} />
-
         <h2>Single Select</h2>
 
         <div style={{ width: 300 }}>
           <Select
             id="my-select"
-            value={value}
+            // value={value}
+            open
             placeholder="placeholder"
             dropdownMenuStyle={{ maxHeight: 200 }}
-            style={{ width: 500 }}
+            // showSearch
+            combobox
+            notFoundContent="没有搜索到相关选项"
+            allowClear
+            style={{ width: '100%' }}
             onBlur={this.onBlur}
             onFocus={this.onFocus}
-            allowClear
-            optionLabelProp="children"
+            optionLabelProp="text"
             optionFilterProp="text"
+            dropdownAlign={{ offset: [0, 1] }} // Menu框与select框的距离
             onChange={this.onChange}
             firstActiveValue="2"
             backfill
           >
-            <Option value="01" text="jack" title="jack">
+            <Option value="01" text="jack1" title="jack2">
               <b
                 style={{
                   color: 'red',
@@ -72,20 +76,29 @@ class Test extends React.Component {
               >
                 jack
               </b>
+              <label>天津</label>
             </Option>
             <Option value="11" text="lucy">
+              <i className="text-icon icon-lpt-clock" style={{ color: '#5897ff' }} />
               lucy
+              <label>北京</label>
             </Option>
             <Option value="21" disabled text="disabled">
               disabled
+              <label>河北</label>
             </Option>
             <Option value="31" text="yiminghe">
+              <i className="text-icon">
+                <img src={positionImg} />
+              </i>
               yiminghe
+              <label>北京</label>
             </Option>
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => {
+            {['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(i => {
               return (
                 <Option key={i} value={i} text={String(i)}>
                   {i}-text
+                  <label>天津</label>
                 </Option>
               );
             })}

@@ -133,6 +133,12 @@ export const UNSELECTABLE_ATTRIBUTE: any = {
   unselectable: 'on',
 };
 
+export const UNSEARCHCONTENT_STYLE: any = {
+  textAlign: 'center',
+  color: '#333',
+  lineHeight: '40px',
+};
+
 export function findFirstMenuItem(children: JSX.Element[]): JSX.Element | null {
   // tslint:disable-next-line:prefer-for-of
   for (let i = 0; i < children.length; i++) {
