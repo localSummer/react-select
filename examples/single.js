@@ -54,8 +54,8 @@ class Test extends React.Component {
             // open
             placeholder="placeholder"
             dropdownMenuStyle={{ maxHeight: 200 }}
-            // showSearch
-            combobox
+            showSearch={false}
+            // combobox
             notFoundContent="没有搜索到相关选项"
             allowClear
             style={{ width: '100%' }}

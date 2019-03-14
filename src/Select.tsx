@@ -547,7 +547,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
       this._focused = false;
       this.updateFocusClassName();
       const props = this.props;
-      let { value } = this.state;
+      let { value, showDeleteFocusItem } = this.state;
       const { inputValue } = this.state;
       if (isSingleMode(props) && props.showSearch && inputValue && props.defaultActiveFirstOption) {
         const options = this._options || [];
@@ -575,6 +575,12 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
           value = tmpValue;
           this.fireChange(value);
         }
+      }
+
+      if (isMultipleOrTags(props) && showDeleteFocusItem) {
+        this.setState({
+          showDeleteFocusItem: false,
+        });
       }
 
       // if click the rest space of Select in multiple mode
@@ -732,7 +738,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     if (value.length) {
       hidden = true;
     }
-    if (isCombobox(props) && value.length === 1 && (state.value && !state.value[0])) {
+    if (!state.open && isCombobox(props) && value.length === 1 && !value[0]) {
       hidden = false;
     }
     const placeholder = props.placeholder;
