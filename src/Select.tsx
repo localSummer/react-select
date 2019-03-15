@@ -620,6 +620,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
         this.setInputValue('');
       }
     }
+    this.blur();
   };
 
   public onChoiceAnimationLeave = () => {
@@ -738,9 +739,10 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     if (value.length) {
       hidden = true;
     }
-    if (!state.open && isCombobox(props) && value.length === 1 && !value[0]) {
+    if (!state.open && value.length === 1 && value[0] === '') {
       hidden = false;
     }
+    // console.log('hidden: ', hidden, state.inputValue, value.length, value, this._focused);
     const placeholder = props.placeholder;
     if (placeholder) {
       return (
@@ -914,6 +916,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
   }
 
   public blur() {
+    this._focused = false;
     if (isSingleMode(this.props) && this.selectionRef) {
       this.selectionRef.blur();
     } else if (this.getInputDOMNode()) {

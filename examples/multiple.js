@@ -38,7 +38,7 @@ class Test extends React.Component {
     useAnim: 0,
     showArrow: 0,
     loading: 0,
-    value: ['c12'],
+    value: [],
   };
 
   onChange = (value, options) => {

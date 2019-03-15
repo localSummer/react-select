@@ -50,7 +50,7 @@ class Test extends React.Component {
         <div style={{ width: 300 }}>
           <Select
             id="my-select"
-            // value={value}
+            value={value}
             // open
             placeholder="placeholder"
             dropdownMenuStyle={{ maxHeight: 200 }}
@@ -65,8 +65,6 @@ class Test extends React.Component {
             optionFilterProp="text"
             dropdownAlign={{ offset: [0, 1] }} // Menu框与select框的距离
             onChange={this.onChange}
-            firstActiveValue="2"
-            backfill
           >
             <Option value="01" text="jack1" title="jack2">
               <b
