@@ -244,6 +244,8 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
   public focusTimer: number | null = null;
 
   // tslint:disable-next-line:variable-name
+  private _firstLoadData: boolean = true;
+  // tslint:disable-next-line:variable-name
   private _focused: boolean = false;
   // tslint:disable-next-line:variable-name
   private _mouseDown: boolean = false;
@@ -1188,19 +1190,24 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     if (isLoading || (!options.length && notFoundContent)) {
       empty = true;
       const className = `${prefixCls}-mul-not-found`;
-      options = [
-        <MenuItem
-          className={className}
-          style={UNSEARCHCONTENT_STYLE}
-          attribute={UNSELECTABLE_ATTRIBUTE}
-          disabled={true}
-          role="option"
-          value="NOT_FOUND"
-          key="NOT_FOUND"
-        >
-          {isLoading ? <i className="text-icon icon-change infinite-rote" /> : notFoundContent}
-        </MenuItem>,
-      ];
+      if (this._firstLoadData) {
+        options= [];
+        this._firstLoadData = false;
+      } else {
+        options = [
+          <MenuItem
+            className={className}
+            style={UNSEARCHCONTENT_STYLE}
+            attribute={UNSELECTABLE_ATTRIBUTE}
+            disabled={true}
+            role="option"
+            value="NOT_FOUND"
+            key="NOT_FOUND"
+          >
+            {isLoading ? <i className="text-icon icon-change infinite-rote" /> : notFoundContent}
+          </MenuItem>,
+        ];
+      }
     }
     return { empty, options };
   };

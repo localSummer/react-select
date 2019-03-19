@@ -27,9 +27,9 @@ const menuItemSelectedIcon = props => {
     'checkboxui-disabled': p.disabled,
   });
   return (
-    <span className="menu-item-right-selected">
+    <label>
       {p.isDispatch && p.disabled ? '已转发' : <i className={menuStyle} />}
-    </span>
+    </label>
   );
 };
 
@@ -109,7 +109,7 @@ class Test extends React.Component {
             dropdownMenuStyle={dropdownMenuStyle}
             style={{ width: 300 }}
             multiple
-            // open
+            open
             dropdownAlign={{ offset: [0, 1] }} // Menu框与select框的距离
             loading={loading}
             showArrow={showArrow}

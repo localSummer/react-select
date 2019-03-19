@@ -48,8 +48,8 @@ class Test extends React.Component {
             animation="slide-up"
             placeholder="搜索下"
             optionLabelProp="children"
+            notFoundContent="没有搜索到相关选项"
             multiple
-            notFoundContent=""
             onSearch={this.fetchData}
             onChange={this.onChange}
             filterOption={false}

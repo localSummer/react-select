@@ -126,12 +126,9 @@
   }
 
   &-enabled &-selection {
-    &:hover {
-      border-color: #23c0fa;
-      box-shadow: 0 0 2px fadeout(#2db7f5, 20%);
-    }
     &:active {
-      border-color: #2db7f5;
+      border-color: #1890FF;
+      box-shadow: 0 0 0 2px #cce7ff;
     }
   }
 
@@ -311,6 +308,7 @@
       margin-left: 0;
       margin-right: 0;
       color: #333;
+      font-weight: bold;
       // transition: margin 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
     }
 
@@ -448,7 +446,7 @@
         font-size: 12px;
         line-height: 28px;
 
-        &.@{selectPrefixCls}-mul-not-found .menu-item-right-selected {
+        &.@{selectPrefixCls}-mul-not-found label:last-child {
           display: none;
         }
 
@@ -589,13 +587,6 @@
       border-width: 0 4px 5px 4px;
     }
   }
-}
-
-// 工具样式类
-.menu-item-right-selected {
-  position: absolute;
-  right: 12px;
-  color: #999;
 }
 
 .infinite-rote {
