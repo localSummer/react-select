@@ -13,20 +13,13 @@ class Test extends React.Component {
     data: [],
     value: '',
     isLoading: true,
+    notFoundContent: '',
   };
 
   lastSelected = {
     id: '',
     value: '',
   };
-
-  componentDidMount() {
-    setTimeout(() => {
-      this.setState({
-        isLoading: false,
-      });
-    }, 5000);
-  }
 
   onKeyDown = e => {
     if (e.keyCode === 13) {
@@ -74,15 +67,21 @@ class Test extends React.Component {
 
   fetchData = value => {
     const content = value || this.state.value;
+    this.setState({
+      isLoading: true,
+      notFoundContent: '',
+    })
     fetch(content, data => {
       this.setState({
         data,
+        isLoading: false,
+        notFoundContent: data.length > 0 ? '' : '没有搜索到相关选项',
       });
     });
   };
 
   render() {
-    const { data, value, isLoading } = this.state;
+    const { data, value, isLoading, notFoundContent } = this.state;
     console.log('value: ', value);
     const options = data.map(d => {
       const index = d.text.indexOf(value);
@@ -112,7 +111,7 @@ class Test extends React.Component {
             defaultActiveFirstOption={false}
             getInputElement={() => <Input />}
             showArrow
-            notFoundContent="没有搜索到相关选项"
+            notFoundContent={notFoundContent}
             onChange={this.handleChange}
             onSelect={this.onSelect}
             filterOption={false}

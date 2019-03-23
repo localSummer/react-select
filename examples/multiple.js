@@ -74,6 +74,10 @@ class Test extends React.Component {
     });
   };
 
+  onClearAll = () => {
+    console.log('onClearAll', this.state.value);
+  };
+
   render() {
     const { useAnim, showArrow, loading, value } = this.state;
     const dropdownMenuStyle = {
@@ -125,6 +129,7 @@ class Test extends React.Component {
             onChange={this.onChange}
             onFocus={() => console.log('focus')}
             onBlur={v => console.log('blur', v)}
+            onClearAll={this.onClearAll}
             tokenSeparators={[' ', ',']}
             menuItemSelectedIcon={menuItemSelectedIcon}
             isMulDeleteFocusItem

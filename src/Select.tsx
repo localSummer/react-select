@@ -84,6 +84,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     onChange: noop,
     onFocus: noop,
     onBlur: noop,
+    onClearAll: noop,
     onSelect: noop,
     onSearch: noop,
     onDeselect: noop,
@@ -94,7 +95,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     dropdownMenuStyle: {},
     optionFilterProp: 'value',
     optionLabelProp: 'value',
-    notFoundContent: 'Not Found',
+    notFoundContent: '',
     backfill: false,
     showAction: ['click'],
     tokenSeparators: [],
@@ -242,9 +243,8 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
   public dropdownContainer: Element | null = null;
   public blurTimer: number | null = null;
   public focusTimer: number | null = null;
+  public clearAllTimer: number | null = null;
 
-  // tslint:disable-next-line:variable-name
-  private _firstLoadData: boolean = true;
   // tslint:disable-next-line:variable-name
   private _focused: boolean = false;
   // tslint:disable-next-line:variable-name
@@ -622,6 +622,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
         this.setInputValue('');
       }
     }
+    this.timeoutClearAll();
     this.blur();
   };
 
@@ -1009,6 +1010,24 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     }
   };
 
+  public timeoutClearAll = () => {
+    if (this.clearAllTimer) {
+      this.clearTimeoutClearAll();
+    }
+    this.clearAllTimer = window.setTimeout(() => {
+      if (this.props.onClearAll) {
+        this.props.onClearAll();
+      }
+    }, 10);
+  };
+
+  public clearTimeoutClearAll = () => {
+    if (this.clearAllTimer) {
+      clearTimeout(this.clearAllTimer);
+      this.clearAllTimer = null;
+    }
+  };
+
   public clearBlurTime = () => {
     if (this.blurTimer) {
       clearTimeout(this.blurTimer);
@@ -1186,28 +1205,23 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
         );
       }
     }
-
+    console.log('inputValue', inputValue);
     if (isLoading || (!options.length && notFoundContent)) {
       empty = true;
       const className = `${prefixCls}-mul-not-found`;
-      if (this._firstLoadData) {
-        options= [];
-        this._firstLoadData = false;
-      } else {
-        options = [
-          <MenuItem
-            className={className}
-            style={UNSEARCHCONTENT_STYLE}
-            attribute={UNSELECTABLE_ATTRIBUTE}
-            disabled={true}
-            role="option"
-            value="NOT_FOUND"
-            key="NOT_FOUND"
-          >
-            {isLoading ? <i className="text-icon icon-change infinite-rote" /> : notFoundContent}
-          </MenuItem>,
-        ];
-      }
+      options = [
+        <MenuItem
+          className={className}
+          style={UNSEARCHCONTENT_STYLE}
+          attribute={UNSELECTABLE_ATTRIBUTE}
+          disabled={true}
+          role="option"
+          value="NOT_FOUND"
+          key="NOT_FOUND"
+        >
+          {isLoading ? <i className="text-icon icon-change infinite-rote" /> : notFoundContent}
+        </MenuItem>,
+      ];
     }
     return { empty, options };
   };

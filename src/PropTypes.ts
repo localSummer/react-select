@@ -54,6 +54,7 @@ export interface ISelectProps {
   onChange: (value: valueType, option: JSX.Element | JSX.Element[]) => void;
   onBlur: emptyFunction;
   onFocus: emptyFunction;
+  onClearAll: emptyFunction;
   onSelect: (value: valueType, option: JSX.Element | JSX.Element[]) => void;
   onSearch: (value: string) => void;
   onDropdownVisibleChange: (open: boolean | undefined) => void;
@@ -153,6 +154,7 @@ const SelectPropTypes = {
   onFocus: PropTypes.func,
   onSelect: PropTypes.func,
   onSearch: PropTypes.func,
+  onClearAll: PropTypes.func,
   onPopupScroll: PropTypes.func,
   onMouseEnter: PropTypes.func,
   onMouseLeave: PropTypes.func,

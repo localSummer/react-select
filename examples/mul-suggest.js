@@ -10,6 +10,8 @@ class Test extends React.Component {
   state = {
     data: [],
     value: [],
+    notFoundContent: '',
+    isLoading: false,
   };
 
   onChange = value => {
@@ -19,16 +21,28 @@ class Test extends React.Component {
     });
   };
 
+  onFocus = () => {
+    this.fetchData('11');
+  };
+
   fetchData = value => {
+    console.log('search value: ', value);
+    this.setState({
+      notFoundContent: '',
+      isLoading: true,
+    });
     fetch(value, data => {
+      console.log('data: ', data);
       this.setState({
+        isLoading: false,
         data,
+        notFoundContent: data.length > 0 ? '' : '没有搜索到相关选项',
       });
     });
   };
 
   render() {
-    const { data, value } = this.state;
+    const { data, value, notFoundContent, isLoading } = this.state;
     const options = data.map(d => {
       return (
         <Option key={d.value}>
@@ -48,11 +62,13 @@ class Test extends React.Component {
             animation="slide-up"
             placeholder="搜索下"
             optionLabelProp="children"
-            notFoundContent="没有搜索到相关选项"
+            notFoundContent={ notFoundContent }
             multiple
             onSearch={this.fetchData}
             onChange={this.onChange}
+            onFocus={this.onFocus}
             filterOption={false}
+            isLoading = {isLoading}
           >
             {options}
           </Select>
