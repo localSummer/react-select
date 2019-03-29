@@ -38,7 +38,7 @@ class Test extends React.Component {
     useAnim: 0,
     showArrow: 0,
     loading: 0,
-    value: [],
+    value: ['c12'],
   };
 
   onChange = (value, options) => {
@@ -113,7 +113,7 @@ class Test extends React.Component {
             dropdownMenuStyle={dropdownMenuStyle}
             style={{ width: 300 }}
             multiple
-            open
+            // open
             dropdownAlign={{ offset: [0, 1] }} // Menu框与select框的距离
             loading={loading}
             showArrow={showArrow}

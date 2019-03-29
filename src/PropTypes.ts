@@ -69,6 +69,7 @@ export interface ISelectProps {
   isLoading: boolean;
   mulDeleteFocusItem: (args: any) => null;
   isMulDeleteFocusItem: boolean;
+  customFilterStyle: boolean;
   value: valueType;
   firstActiveValue: valueType;
   defaultValue: valueType;
@@ -179,7 +180,8 @@ const SelectPropTypes = {
   dropdownRender: PropTypes.func,
   isLoading: PropTypes.bool,
   mulDeleteFocusItem: PropTypes.func,
-  isMulDeleteFocusItem: PropTypes.bool
+  isMulDeleteFocusItem: PropTypes.bool,
+  customFilterStyle: PropTypes.bool,
 };
 
 export default SelectPropTypes;

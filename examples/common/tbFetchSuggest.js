@@ -16,7 +16,7 @@ export function fetch(value, callback) {
   function fake() {
     const str = querystring.encode({
       code: 'utf-8',
-      q: value,
+      q: 'java',
     });
     jsonp(`http://suggest.taobao.com/sug?${str}`, (err, d) => {
       if (currentValue === value) {

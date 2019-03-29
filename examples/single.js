@@ -3,25 +3,27 @@
 import React from 'react';
 import Select, { Option } from '../src';
 import '../assets/index.less';
+import '../assets/single.less';
 import positionImg from './images/position.png';
 
 class Test extends React.Component {
   state = {
     destroy: false,
-    value: '',
+    value: '11',
   };
 
   onChange = (e, opt) => {
-    let value;
-    if (e && e.target) {
-      value = e.target.value;
-    } else {
-      value = e;
-    }
-    console.log('onChange', value, opt);
+    console.log('onChange222', opt, e);
+    this.setState({
+      value: e,
+    });
+  };
+
+  handleSelect = (value, opt) => {
+    console.log(value, opt);
     this.setState({
       value,
-    });
+    })
   };
 
   onDestroy = () => {
@@ -40,6 +42,7 @@ class Test extends React.Component {
 
   render() {
     const { value, destroy } = this.state;
+    console.log('value: ', value);
     if (destroy) {
       return null;
     }
@@ -51,11 +54,11 @@ class Test extends React.Component {
           <Select
             id="my-select"
             value={value}
-            // open
+            open
             placeholder="placeholder"
             dropdownMenuStyle={{ maxHeight: 200 }}
             showSearch={false}
-            // combobox
+            combobox
             notFoundContent="没有搜索到相关选项"
             allowClear
             style={{ width: '100%' }}
@@ -63,7 +66,9 @@ class Test extends React.Component {
             onFocus={this.onFocus}
             optionLabelProp="text"
             optionFilterProp="text"
+            onSelect={this.handleSelect}
             dropdownAlign={{ offset: [0, 1] }} // Menu框与select框的距离
+            dropdownClassName="my-select-single"
             onChange={this.onChange}
           >
             <Option value="01" text="jack1" title="jack2">
@@ -76,9 +81,19 @@ class Test extends React.Component {
               </b>
               <label>天津</label>
             </Option>
-            <Option value="11" text="lucy">
+            <Option value="11" text="lucylucylucylucylucylucylucylucylucylucylucylucylucylucylucylucy">
               <i className="text-icon icon-lpt-clock" style={{ color: '#5897ff' }} />
-              lucy
+              lucylucylucylucylucylucylucylucylucylucylucylucylucylucylucylucy
+              <label>北京</label>
+            </Option>
+            <Option value="12" title="北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京" text="北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京">
+              <i className="text-icon icon-lpt-clock" style={{ color: '#5897ff' }} />
+              北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京
+              <label>北京</label>
+            </Option>
+            <Option value="13" text="北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京">
+              <i className="text-icon icon-lpt-clock" style={{ color: '#5897ff' }} />
+              北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京北京
               <label>北京</label>
             </Option>
             <Option value="21" disabled text="disabled">
@@ -92,14 +107,6 @@ class Test extends React.Component {
               yiminghe
               <label>北京</label>
             </Option>
-            {['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(i => {
-              return (
-                <Option key={i} value={i} text={String(i)}>
-                  {i}-text
-                  <label>天津</label>
-                </Option>
-              );
-            })}
           </Select>
         </div>
         <h2>native select</h2>

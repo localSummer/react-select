@@ -104,6 +104,7 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
     dropdownRender: (menu: any) => menu,
     isLoading: false,
     isMulDeleteFocusItem: false,
+    customFilterStyle: false
   };
   public static getDerivedStateFromProps = (nextProps: ISelectProps, prevState: ISelectState) => {
     const optionsInfo = prevState.skipBuildOptionsInfo
@@ -1205,7 +1206,6 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
         );
       }
     }
-    console.log('inputValue', inputValue);
     if (isLoading || (!options.length && notFoundContent)) {
       empty = true;
       const className = `${prefixCls}-mul-not-found`;
@@ -1299,16 +1299,44 @@ class Select extends React.Component<Partial<ISelectProps>, ISelectState> {
       validateOptionValue(childValue, this.props);
 
       if (this.filterOption(inputValue as string, child as React.ReactElement<any>)) {
-        const menuItem = (
-          <MenuItem
-            style={UNSELECTABLE_STYLE}
-            attribute={UNSELECTABLE_ATTRIBUTE}
-            value={childValue}
-            key={childValue}
-            role="option"
-            {...(child as React.ReactElement<any>).props}
-          />
-        );
+        let menuItem;
+        if (props.customFilterStyle) {
+          let optionLabelProp: string = props.optionLabelProp!;
+          const index = (child as React.ReactElement<any>).props[optionLabelProp].indexOf(inputValue);
+          const beforeStr = (child as React.ReactElement<any>).props[optionLabelProp].substr(0, index);
+          const afterStr = (child as React.ReactElement<any>).props[optionLabelProp].substr(index + (inputValue as string).length);
+          menuItem = (
+            <MenuItem
+              style={UNSELECTABLE_STYLE}
+              attribute={UNSELECTABLE_ATTRIBUTE}
+              value={childValue}
+              key={childValue}
+              role="option"
+              {...(child as React.ReactElement<any>).props}
+            >
+              {
+                index > -1 ? (
+                  <>
+                    <span style={{ fontWeight: 'bold' }}>{beforeStr}</span>
+                    <span>{inputValue}</span>
+                    <span style={{ fontWeight: 'bold' }}>{afterStr}</span>
+                  </>
+                ) : ((child as React.ReactElement<any>).props[optionLabelProp])
+              }
+            </MenuItem>
+          );
+        } else {
+          menuItem = (
+            <MenuItem
+              style={UNSELECTABLE_STYLE}
+              attribute={UNSELECTABLE_ATTRIBUTE}
+              value={childValue}
+              key={childValue}
+              role="option"
+              {...(child as React.ReactElement<any>).props}
+            />
+          );
+        }
         sel.push(menuItem);
         menuItems.push(menuItem);
       }
